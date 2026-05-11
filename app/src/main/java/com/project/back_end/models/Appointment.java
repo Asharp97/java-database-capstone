@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 
@@ -48,26 +49,29 @@ public class Appointment {
   // start time (appointmentTime).
   // - It is used to get an estimated appointment end time for display purposes.
 
+  @Transient
   private LocalDateTime getEndTime() {
     return appointmentTime.plusHours(1);
   }
-
+  
   // 7. 'getAppointmentDate' method:
   // - Type: private LocalDate
   // - Description:
   // - This method extracts only the date part from the appointmentTime field.
   // - It returns a LocalDate object representing just the date (without the time)
   // of the scheduled appointment.
+  @Transient
   private LocalDate getAppointmentDate() {
     return appointmentTime.toLocalDate();
   }
-
+  
   // 8. 'getAppointmentTimeOnly' method:
   // - Type: private LocalTime
   // - Description:
   // - This method extracts only the time part from the appointmentTime field.
   // - It returns a LocalTime object representing just the time (without the date)
   // of the scheduled appointment.
+  @Transient
   private LocalTime getAppointmentTimeOnly() {
     return appointmentTime.toLocalTime();
   }

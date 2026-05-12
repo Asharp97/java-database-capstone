@@ -1,5 +1,10 @@
 package com.project.back_end.repo;
 
+import org.springframework.stereotype.Repository;
+
+import com.project.back_end.models.Doctor;
+
+@Repository
 public interface DoctorRepository {
    // 1. Extend JpaRepository:
 //    - The repository extends JpaRepository<Doctor, Long>, which gives it basic CRUD functionality.
@@ -9,7 +14,7 @@ public interface DoctorRepository {
 // Example: public interface DoctorRepository extends JpaRepository<Doctor, Long> {}
 
 // 2. Custom Query Methods:
-
+public Doctor findByEmail(String email);
 //    - **findByEmail**:
 //      - This method retrieves a Doctor by their email.
 //      - Return type: Doctor

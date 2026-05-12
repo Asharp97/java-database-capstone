@@ -1,10 +1,13 @@
 // header.js — dynamic header renderer for all pages
 
-export function renderHeader() {
+function renderHeader() {
   const headerDiv = document.getElementById("header");
 
   // If on root/index page, show minimal header
-  if (window.location.pathname.endsWith("/") || window.location.pathname.endsWith("/index.html")) {
+  if (
+    window.location.pathname.endsWith("/") ||
+    window.location.pathname.endsWith("/index.html")
+  ) {
     localStorage.removeItem("userRole");
     localStorage.removeItem("token");
     headerDiv.innerHTML = `
@@ -29,7 +32,10 @@ export function renderHeader() {
       <nav class="header-nav">`;
 
   // Handle invalid sessions
-  if ((role === "loggedPatient" || role === "admin" || role === "doctor") && !token) {
+  if (
+    (role === "loggedPatient" || role === "admin" || role === "doctor") &&
+    !token
+  ) {
     localStorage.removeItem("userRole");
     localStorage.removeItem("token");
     alert("Session expired or invalid login. Please log in again.");
@@ -111,16 +117,6 @@ function logoutPatient() {
 
 // Immediately render the header
 renderHeader();
-
-
-
-
-
-
-
-
-
-
 
 /*
   Step-by-Step Explanation of Header Section Rendering
@@ -246,4 +242,3 @@ renderHeader();
 
   16. **Render the Header**: Finally, the `renderHeader()` function is called to initialize the header rendering process when the page loads.
 */
-   

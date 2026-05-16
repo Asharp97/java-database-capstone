@@ -73,7 +73,7 @@ public class TokenService {
   // the email) is extracted.
   // This method allows the application to retrieve the user's identity (email)
   // from the token for further use.
-  private String extractEmail(String token) {
+  public String extractEmail(String token) {
     return Jwts.parser()
         .verifyWith(getSigningKey())
         .build()
@@ -101,16 +101,16 @@ public class TokenService {
   // existence in the system.
   public boolean validateToken(String token, String role) {
     try {
-      String email = extractEmail(token);
+      String identifier = extractEmail(token);
       switch (role) {
         case "admin":
-          return adminRepository.findByEmail(email) != null;
+          return adminRepository.findByUsername(identifier) != null;
 
         case "doctor":
-          return doctorRepository.findByEmail(email) != null;
+          return doctorRepository.findByEmail(identifier) != null;
 
         case "patient":
-          return patientRepository.findByEmail(email) != null;
+          return patientRepository.findByEmail(identifier) != null;
 
         default:
           return false;

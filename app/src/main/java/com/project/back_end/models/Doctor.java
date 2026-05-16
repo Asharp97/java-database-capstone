@@ -2,6 +2,7 @@ package com.project.back_end.models;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.ElementCollection;
@@ -98,6 +99,7 @@ public class Doctor {
   // - The @ElementCollection annotation ensures that the list of time slots is
   // stored as a separate collection in the database.
   @ElementCollection
+  @JsonIgnore
   private List<String> availableTimes;
   // 8. Getters and Setters:
   // - Standard getter and setter methods are provided for all fields: id, name,

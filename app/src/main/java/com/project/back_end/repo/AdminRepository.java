@@ -7,9 +7,8 @@ import com.project.back_end.models.Admin;
 @Repository
 public interface AdminRepository extends JpaRepository<Admin, Long> {
     Admin findByUsername(String username);
-    Admin findByEmail(String email); 
 
-    // 1. Extend JpaRepository:
+// 1. Extend JpaRepository:
 //    - The repository extends JpaRepository<Admin, Long>, which gives it basic CRUD functionality.
 //    - The methods such as save, delete, update, and find are inherited without the need for explicit implementation.
 //    - JpaRepository also includes pagination and sorting features.

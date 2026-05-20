@@ -2,7 +2,7 @@
 
 import { deleteDoctor } from '../services/doctorServices.js';
 import { showBookingOverlay } from '../loggedPatient.js';
-import { fetchPatientDetails } from '../services/patientServices.js';
+import { getPatientData } from '../services/patientServices.js';
 
 export function createDoctorCard(doctor) {
   const role = localStorage.getItem("userRole");
@@ -17,7 +17,7 @@ export function createDoctorCard(doctor) {
   info.classList.add("doctor-info");
 
   const name = document.createElement("h3");
-  name.textContent = `Dr. ${doctor.name}`;
+  name.textContent = `${doctor.name}`;
 
   const specialty = document.createElement("p");
   specialty.textContent = `Specialty: ${doctor.specialty}`;
@@ -102,7 +102,7 @@ export function createDoctorCard(doctor) {
       }
 
       try {
-        const patient = await fetchPatientDetails(token);
+        const patient = await getPatientData(token);
         showBookingOverlay(doctor, patient);
       } catch (err) {
         console.error(err);

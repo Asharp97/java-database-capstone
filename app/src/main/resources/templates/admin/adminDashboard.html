@@ -116,7 +116,7 @@ with search, filter, and modal functionality.
     <link rel="stylesheet" th:href="@{/assets/css/style.css}" />
     <script th:src="@{/js/render.js}" defer></script>
     <script th:src="@{/js/util.js}" defer></script>
-    <script th:src="@{/js/components/header.js}" defer></script>
+    <script type="module" th:src="@{/js/components/header.js}" defer></script>
     <script th:src="@{/js/components/footer.js}" defer></script>
     <title>Admin Dashboard</title>
   </head>
@@ -130,20 +130,46 @@ with search, filter, and modal functionality.
             name="search"
             placeholder="Search by doctor name"
             id="searchbar" />
-          <select name="time" id="time"></select>
-          <select name="speciality" id="speciality"></select>
+
+          <select name="time" id="time">
+            <option value="">Select time</option>
+            <option value="7AM">07:00 AM</option>
+            <option value="8AM">08:00 AM</option>
+            <option value="9AM">09:00 AM</option>
+            <option value="10AM">10:00 AM</option>
+            <option value="11AM">11:00 AM</option>
+            <option value="12PM">12:00 PM</option>
+            <option value="1PM">01:00 PM</option>
+            <option value="2PM">02:00 PM</option>
+            <option value="3PM">03:00 PM</option>
+            <option value="4PM">04:00 PM</option>
+            <option value="5PM">05:00 PM</option>
+          </select>
+
+          <select name="speciality" id="speciality">
+            <option value="">Select speciality</option>
+            <option value="cardiology">Cardiology</option>
+            <option value="dermatology">Dermatology</option>
+            <option value="neurology">Neurology</option>
+            <option value="orthopedics">Orthopedics</option>
+            <option value="pediatrics">Pediatrics</option>
+            <option value="psychiatry">Psychiatry</option>
+            <option value="radiology">Radiology</option>
+            <option value="urology">Urology</option>
+          </select>
           <div id="content"></div>
           <div id="footer"></div>
         </div>
       </div>
     </div>
-    <script type="module" src="../js/services/adminDashboard.js" defer></script>
-    <script type="module" src="../js/components/doctorCard.js" defer></script>
     <div id="modal" class="modal">
       <span id="closeModal" class="close">&times;</span>
       <div id="modal-body"></div>
     </div>
-    <script type="module" src="../js/services/adminDashboard.js" defer></script>
-    <script type="module" src="../js/components/doctorCard.js" defer></script>
+    <script type="module" th:src="@{/js/adminDashboard.js}" defer></script>
+    <script
+      type="module"
+      th:src="@{/js/components/doctorCard.js}"
+      defer></script>
   </body>
 </html>

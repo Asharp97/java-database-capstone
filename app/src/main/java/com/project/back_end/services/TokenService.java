@@ -1,9 +1,11 @@
 package com.project.back_end.services;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.project.back_end.repo.AdminRepository;
@@ -38,6 +40,9 @@ public class TokenService {
     this.patientRepository = patientRepository;
   }
 
+  @Value("${jwt.secret}")
+  private String secretKey;
+
   // 3. **getSigningKey Method**
   // This method retrieves the HMAC SHA key used to sign JWT tokens.
   // It uses the `jwt.secret` value, which is provided from an external source
@@ -45,7 +50,7 @@ public class TokenService {
   // The `Keys.hmacShaKeyFor()` method converts the secret key string into a valid
   // `SecretKey` for signing and verification of JWTs.
   public SecretKey getSigningKey() {
-    return Keys.hmacShaKeyFor("jwt.secret".getBytes());
+    return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
   }
 
   // 4. **generateToken Method**

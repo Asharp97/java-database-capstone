@@ -165,8 +165,29 @@ public class DoctorService {
   // doctors.
   @Transactional
   public Map<String, Object> filterDoctorsByNameSpecilityandTime(String name, String specialty, String time) {
-    List<Doctor> doctors = doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specialty);
-    List<Doctor> result = filterDoctorsByTime(doctors, time);
+    if (name == null || name.isBlank() || name.equalsIgnoreCase("none") || name.equalsIgnoreCase("null")) {
+      name = "";
+    }
+    if (specialty == null || specialty.isBlank() || specialty.equalsIgnoreCase("none")
+        || specialty.equalsIgnoreCase("null")) {
+      specialty = "";
+    }
+    if (time == null || time.isBlank() || time.equalsIgnoreCase("none") || time.equalsIgnoreCase("null")) {
+      time = "";
+    }
+
+    List<Doctor> doctors;
+    if (name.isEmpty() && specialty.isEmpty()) {
+      doctors = doctorRepository.findAll();
+    } else if (name.isEmpty()) {
+      doctors = doctorRepository.findBySpecialtyIgnoreCase(specialty);
+    } else if (specialty.isEmpty()) {
+      doctors = doctorRepository.findByNameLike(name);
+    } else {
+      doctors = doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specialty);
+    }
+
+    List<Doctor> result = time.isEmpty() ? doctors : filterDoctorsByTime(doctors, time);
     Map<String, Object> response = new HashMap<>();
     response.put("doctors", result);
     return response;

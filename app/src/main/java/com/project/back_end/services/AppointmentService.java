@@ -139,20 +139,19 @@ public class AppointmentService {
     Doctor doctor = doctorRepository.findByEmail(email);
     Long doctorId = doctor.getId();
 
-
     // 2. Build the date range for the query
     LocalDateTime start = date.atStartOfDay();
-    LocalDateTime end   = date.atTime(LocalTime.MAX);
+    LocalDateTime end = date.atTime(LocalTime.MAX);
 
     // 3. Fetch appointments
     List<Appointment> appointments = appointmentRepository
-            .findByDoctorIdAndAppointmentTimeBetween(doctorId, start, end);
+        .findByDoctorIdAndAppointmentTimeBetween(doctorId, start, end);
 
-    // 4. Filter by patient name if provided
-    if (pname != null && !pname.isBlank()) {
-        appointments = appointments.stream()
-                .filter(a -> a.getPatient().getName().equalsIgnoreCase(pname))
-                .collect(Collectors.toList());
+    // 4. Filter by patient name if provided (ignore if "all" or empty/blank)
+    if (pname != null && !pname.isBlank() && !pname.equalsIgnoreCase("all")) {
+      appointments = appointments.stream()
+          .filter(a -> a.getPatient().getName().equalsIgnoreCase(pname))
+          .collect(Collectors.toList());
     }
 
     // 5. Return as a map

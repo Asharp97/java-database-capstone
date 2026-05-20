@@ -8,7 +8,8 @@
 }
 
 /* === Base Layout === */
-html, body {
+html,
+body {
   height: 100%;
   font-family: Arial, sans-serif;
 }
@@ -38,11 +39,19 @@ h1 {
   align-items: center;
   text-align: center;
 
-  background-image: url("../images/index/index.png");
+  background-image: url("../images/defineRole/index.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
+}
+.main-content select,
+.main-content input {
+  margin: 10px;
+  padding-inline: 4px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
 }
 
 /* === Search Input === */
@@ -73,7 +82,7 @@ h1 {
 
 /* === Primary Button === */
 button {
-  background-color: #A62B1F;
+  background-color: #a62b1f;
   color: white;
   border: none;
   border-radius: 12px;
@@ -86,7 +95,7 @@ button {
 }
 
 button:hover {
-  background-color: #A62B1F; /* Keep same for brand consistency */
+  background-color: #a62b1f; /* Keep same for brand consistency */
 }
 
 /* === Admin-Specific Button === */
@@ -102,7 +111,7 @@ button:hover {
 }
 
 .adminBtn:hover {
-  color: #A62B1F;
+  color: #a62b1f;
 }
 
 /* === Doctor Card List Layout === */
@@ -115,20 +124,21 @@ button:hover {
 }
 
 /* === Modal Overlay === */
-.modal-overlay {
+.modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
 }
 
-.modal-overlay.hidden {
+.modal.hidden {
   display: none;
 }
 
@@ -137,7 +147,9 @@ button:hover {
   background-color: #fff;
   padding: 30px;
   border-radius: 12px;
-  width: 400px;
+  max-width: 400px;
+  margin-inline: auto;
+  text-align: center;
   position: relative;
 }
 
@@ -151,12 +163,8 @@ button:hover {
 }
 
 .modal-close:hover {
-  color: #A62B1F;
+  color: #a62b1f;
 }
-
-
-
-
 
 /*this is the style sheet for the adminDashboard. */
 

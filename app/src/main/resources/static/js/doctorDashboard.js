@@ -1,20 +1,20 @@
 // doctorDashboard.js — Appointment management for doctors
 
 import { getAllAppointments } from "./services/appointmentRecordService.js";
-import { createPatientRow } from "./components/patientRecordRow.js";
+import { createDoctorAppointmentRow } from "./components/patientRecordRow.js";
 
 // === State Variables ===
 const tableBody = document.getElementById("patientTableBody");
-const token = localStorage.getItem("token");
+const token = localStorage.getItem("token") || "";
 let selectedDate = new Date().toISOString().split("T")[0]; // today's date in YYYY-MM-DD
-let patientName = null;
+let patientName = ""; // "all" to fetch all appointments
 
 // === Search Bar Filtering ===
 const searchBar = document.getElementById("searchBar");
 if (searchBar) {
   searchBar.addEventListener("input", () => {
     const query = searchBar.value.trim();
-    patientName = query !== "" ? query : null;
+    patientName = query !== "" ? query : "all"; // use "all" to fetch all appointments
     loadAppointments();
   });
 }
@@ -41,26 +41,37 @@ if (datePicker) {
 // === Load Appointments Based on Date & Optional Name Filter ===
 async function loadAppointments() {
   try {
-    const appointments = await getAllAppointments(selectedDate, patientName, token);
+    console.log("📥 loadAppointments called with:", {
+      selectedDate,
+      patientName,
+      token,
+    });
+    const response = await getAllAppointments(selectedDate, patientName, token);
+
+    console.log("📦 Raw response from API:", response);
+
+    // Handle both array response and object response with appointments property
+    const appointments = Array.isArray(response)
+      ? response
+      : response?.appointments || response?.data || [];
+
+    console.log("🎯 Extracted appointments:", appointments);
+
     tableBody.innerHTML = "";
 
     if (!appointments || appointments.length === 0) {
+      console.warn("⚠️ No appointments found for the given criteria");
       tableBody.innerHTML = `<tr><td colspan="5" class="noPatientRecord">No Appointments found for selected date.</td></tr>`;
       return;
     }
 
-    appointments.forEach(app => {
-      const patient = {
-        id: app.patient?.id,
-        name: app.patient?.name,
-        email: app.patient?.email,
-        phone: app.patient?.phone
-      };
-      const row = createPatientRow(app, patient);
+    console.log(`✅ Rendering ${appointments.length} appointments`);
+    appointments.forEach((app) => {
+      const row = createDoctorAppointmentRow(app);
       tableBody.appendChild(row);
     });
   } catch (err) {
-    console.error("Error loading appointments:", err);
+    console.error("🚨 Error loading appointments:", err);
     tableBody.innerHTML = `<tr><td colspan="5" class="noPatientRecord">Error loading appointments. Try again later.</td></tr>`;
   }
 }
@@ -70,7 +81,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderContent(); // Injects header/footer layout
   loadAppointments(); // Loads today's appointments
 });
-
 
 /*
   Import getAllAppointments to fetch appointments from the backend

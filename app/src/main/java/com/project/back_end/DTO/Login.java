@@ -18,11 +18,12 @@ public class Login {
   // authentication.
   private String password;
 
-  // 3. Constructor:
-  // - No explicit constructor is defined for this class, as it relies on the
-  // default constructor provided by Java.
-  // - This class can be initialized with setters or directly via reflection, as
-  // per the application's needs.
+  // 3. Constructors:
+  // - No-argument constructor is required for JSON deserialization by Spring.
+  // - The parameterized constructor is provided for convenience.
+  public Login() {
+  }
+
   public Login(String email, String password) {
     this.email = email;
     this.password = password;

@@ -40,9 +40,9 @@ export function openModal(type) {
   } else if (type === "patientLogin") {
     modalContent = `
         <h2>Patient Login</h2>
-        <input type="text" id="email" placeholder="Email" class="input-field">
-        <input type="password" id="password" placeholder="Password" class="input-field">
-        <button class="dashboard-btn" id="loginBtn">Login</button>
+        <input type="text" id="PatientEmail" placeholder="Email" class="input-field">
+        <input type="password" id="PatientPassword" placeholder="Password" class="input-field">
+        <button class="dashboard-btn" id="patientLoginSubmitBtn">Login</button>
       `;
   } else if (type === "patientSignup") {
     modalContent = `
@@ -57,16 +57,16 @@ export function openModal(type) {
   } else if (type === "adminLogin") {
     modalContent = `
         <h2>Admin Login</h2>
-        <input type="text" id="username" name="username" placeholder="Username" class="input-field">
-        <input type="password" id="password" name="password" placeholder="Password" class="input-field">
-        <button class="dashboard-btn" id="adminLoginBtn" >Login</button>
+        <input type="text" id="adminUsername" name="username" placeholder="Username" class="input-field">
+        <input type="password" id="adminPassword" name="password" placeholder="Password" class="input-field">
+        <button class="dashboard-btn" id="adminLoginSubmitBtn">Login</button>
       `;
   } else if (type === "doctorLogin") {
     modalContent = `
         <h2>Doctor Login</h2>
-        <input type="text" id="email" placeholder="Email" class="input-field">
-        <input type="password" id="password" placeholder="Password" class="input-field">
-        <button class="dashboard-btn" id="doctorLoginBtn" >Login</button>
+        <input type="text" id="doctorEmail" placeholder="Email" class="input-field">
+        <input type="password" id="doctorPassword" placeholder="Password" class="input-field">
+        <button class="dashboard-btn" id="doctorLoginSubmitBtn">Login</button>
       `;
   }
 
@@ -77,31 +77,34 @@ export function openModal(type) {
     document.getElementById("modal").style.display = "none";
   };
 
-  if (type === "patientSignup") {
-    document
-      .getElementById("signupBtn")
-      .addEventListener("click", signupPatient);
-  }
-
   if (type === "patientLogin") {
-    document.getElementById("loginBtn").addEventListener("click", loginPatient);
+    document
+      .getElementById("patientLoginSubmitBtn")
+      .addEventListener("click", window.patientLoginHandler);
   }
 
   if (type === "addDoctor") {
     document
       .getElementById("saveDoctorBtn")
-      .addEventListener("click", adminAddDoctor);
+      .addEventListener("click", window.adminAddDoctor);
   }
 
   if (type === "adminLogin") {
     document
-      .getElementById("adminLoginBtn")
-      .addEventListener("click", adminLoginHandler);
+      .getElementById("adminLoginSubmitBtn")
+      .addEventListener("click", window.adminLoginHandler);
   }
 
   if (type === "doctorLogin") {
     document
-      .getElementById("doctorLoginBtn")
-      .addEventListener("click", doctorLoginHandler);
+      .getElementById("doctorLoginSubmitBtn")
+      .addEventListener("click", window.doctorLoginHandler);
+  }
+}
+
+export function closeModal() {
+  const modal = document.getElementById("modal");
+  if (modal) {
+    modal.style.display = "none";
   }
 }

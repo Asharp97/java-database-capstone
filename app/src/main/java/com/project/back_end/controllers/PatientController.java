@@ -13,11 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.back_end.DTO.Login;
 import com.project.back_end.models.Patient;
 import com.project.back_end.services.PatientService;
 import com.project.back_end.services.Service;
 
-@RequestMapping("/patient")
+@RequestMapping("${api.path}patient")
 @RestController
 public class PatientController {
 
@@ -81,8 +82,8 @@ public class PatientController {
   // - Returns a response with a token or an error message depending on login
   // success.
   @PostMapping("/login")
-  public ResponseEntity<String> login(@RequestBody String email, String password) {
-    return service.validatePatientLogin(email, password);
+  public ResponseEntity<Map<String, String>> login(@RequestBody Login login) {
+    return service.validatePatientLogin(login.getEmail(), login.getPassword());
   }
 
   // 6. Define the `getPatientAppointment` Method:

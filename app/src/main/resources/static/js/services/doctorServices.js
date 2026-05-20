@@ -3,7 +3,7 @@
 import { API_BASE_URL } from "../config/config.js";
 
 // Base endpoint
-const DOCTOR_API = `${API_BASE_URL}/api/doctors`;
+const DOCTOR_API = `${API_BASE_URL}/doctor`;
 
 // === Get All Doctors ===
 export async function getDoctors() {
@@ -20,20 +20,20 @@ export async function getDoctors() {
 // === Delete Doctor by ID (Admin) ===
 export async function deleteDoctor(doctorId, token) {
   try {
-    const response = await fetch(`${DOCTOR_API}/delete/${doctorId}/${token}`, {
-      method: "DELETE"
+    const response = await fetch(`${DOCTOR_API}/${doctorId}/${token}`, {
+      method: "DELETE",
     });
 
     const data = await response.json();
     return {
       success: response.ok,
-      message: data.message
+      message: data.message,
     };
   } catch (error) {
     console.error("Error deleting doctor:", error);
     return {
       success: false,
-      message: "An unexpected error occurred."
+      message: "An unexpected error occurred.",
     };
   }
 }
@@ -41,24 +41,24 @@ export async function deleteDoctor(doctorId, token) {
 // === Save New Doctor ===
 export async function saveDoctor(doctor, token) {
   try {
-    const response = await fetch(`${DOCTOR_API}/create/${token}`, {
+    const response = await fetch(`${DOCTOR_API}/${token}`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(doctor)
+      body: JSON.stringify(doctor),
     });
 
     const data = await response.json();
     return {
       success: response.ok,
-      message: data.message
+      message: data.message,
     };
   } catch (error) {
     console.error("Error saving doctor:", error);
     return {
       success: false,
-      message: "Unable to save doctor. Please try again."
+      message: "Unable to save doctor. Please try again.",
     };
   }
 }
@@ -66,11 +66,22 @@ export async function saveDoctor(doctor, token) {
 // === Filter Doctors by Name, Time, and Specialty ===
 export async function filterDoctors(name = "", time = "", specialty = "") {
   try {
-    const response = await fetch(`${DOCTOR_API}/filter/${name}/${time}/${specialty}`);
+    const safeName =
+      name?.trim().length > 0 ? encodeURIComponent(name.trim()) : "none";
+    const safeTime =
+      time?.trim().length > 0 ? encodeURIComponent(time.trim()) : "none";
+    const safeSpecialty =
+      specialty?.trim().length > 0
+        ? encodeURIComponent(specialty.trim())
+        : "none";
+
+    const response = await fetch(
+      `${DOCTOR_API}/filter/${safeName}/${safeTime}/${safeSpecialty}`,
+    );
 
     if (!response.ok) {
       console.error("Filter request failed");
-      return { doctors: [] };
+      return [];
     }
 
     const data = await response.json();
@@ -78,11 +89,9 @@ export async function filterDoctors(name = "", time = "", specialty = "") {
   } catch (error) {
     console.error("Error filtering doctors:", error);
     alert("Something went wrong while filtering doctors.");
-    return { doctors: [] };
+    return [];
   }
 }
-
-
 
 /*
   Import the base API URL from the config file

@@ -80,16 +80,31 @@ public class Service {
   // the system.
   public ResponseEntity<Map<String, String>> validateAdmin(Admin receivedAdmin) {
     try {
+      if (receivedAdmin == null) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "Invalid username or password."));
+      }
       Admin admin = adminRepository.findByUsername(receivedAdmin.getUsername());
+      if (admin == null) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "no such admin"));
+      }
       if (admin == null || !admin.getPassword().equals(receivedAdmin.getPassword())) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid username or password."));
       }
       String token = tokenService.generateToken(receivedAdmin.getUsername());
+      if (token == null) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "No token generated."));
+      }
       return ResponseEntity.ok(Map.of("token", token));
     } catch (Exception e) {
+      e.printStackTrace();
+
+      // 2. Return the raw exception type name back to the browser
+      String realError = e.toString();
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .body(Map.of("message", "Failed to validate admin."));
+          .body(Map.of("message", "Root problem: " + realError));
+
     }
+
   }
 
   // 5. **filterDoctor Method**
@@ -153,18 +168,18 @@ public class Service {
   // This method ensures only legitimate patients can log in and access their data
   // securely.
 
-  public ResponseEntity<String> validatePatientLogin(String email, String password) {
+  public ResponseEntity<Map<String, String>> validatePatientLogin(String email, String password) {
     try {
       Patient patient = patientRepository.findByEmail(email);
       if (patient == null || !patient.getPassword().equals(password)) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-            .body("Invalid email or password.");
+            .body(Map.of("message", "Invalid email or password."));
       }
       String token = tokenService.generateToken(email);
-      return ResponseEntity.ok(token);
+      return ResponseEntity.ok(Map.of("token", token));
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .body("Login failed due to an internal error.");
+          .body(Map.of("message", "Login failed due to an internal error."));
     }
   }
 

@@ -1,4 +1,5 @@
 // header.js — dynamic header renderer for all pages
+// import { openModal } from "./modals.js";
 
 function renderHeader() {
   const headerDiv = document.getElementById("header");
@@ -46,7 +47,7 @@ function renderHeader() {
   // Role-specific header actions
   if (role === "admin") {
     headerContent += `
-      <button id="addDocBtn" class="adminBtn" onclick="openModal('addDoctor')">Add Doctor</button>
+      <button id="addDoctorBtn" class="adminBtn" onclick="openModal('addDoctor')">Add Doctor</button>
       <a href="#" id="adminLogout">Logout</a>`;
   } else if (role === "doctor") {
     headerContent += `

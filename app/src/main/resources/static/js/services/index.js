@@ -1,16 +1,16 @@
-// index.js — role-based login services for Admin and Doctor
-
 import { openModal } from "../components/modals.js";
 import { API_BASE_URL } from "../config/config.js";
 
 // API Endpoints
-const ADMIN_API = `${API_BASE_URL}/api/admin/login`;
-const DOCTOR_API = `${API_BASE_URL}/api/doctors/login`;
+const ADMIN_API = `${API_BASE_URL}/admin/login`;
+const DOCTOR_API = `${API_BASE_URL}/doctor/login`;
+const PATIENT_API = `${API_BASE_URL}/patient/login`;
 
 // Setup button click listeners once DOM is ready
 window.onload = () => {
   const adminLoginBtn = document.getElementById("adminLoginBtn");
   const doctorLoginBtn = document.getElementById("doctorLoginBtn");
+  const patientLoginBtn = document.getElementById("patientLoginBtn");
 
   if (adminLoginBtn) {
     adminLoginBtn.addEventListener("click", () => openModal("adminLogin"));
@@ -18,6 +18,10 @@ window.onload = () => {
 
   if (doctorLoginBtn) {
     doctorLoginBtn.addEventListener("click", () => openModal("doctorLogin"));
+  }
+
+  if (patientLoginBtn) {
+    patientLoginBtn.addEventListener("click", () => openModal("patientLogin"));
   }
 };
 
@@ -32,28 +36,37 @@ window.adminLoginHandler = async function () {
   }
 
   const admin = { username, password };
-
   try {
     const response = await fetch(ADMIN_API, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(admin)
+      body: JSON.stringify(admin),
     });
 
+    // 1. Check if the server returned an error (401, 500, etc.)
     if (!response.ok) {
-      alert("Invalid admin credentials.");
+      // 2. Read the JSON payload safely *before* doing anything else
+      const errorData = await response.json().catch(() => null);
+
+      // 3. Fallback if the backend didn't send a JSON message
+      const errorMessage =
+        errorData?.message || `Server error: ${response.status}`;
+
+      console.error("Login failed context:", errorData);
+      alert(errorMessage);
       return;
     }
 
+    // If successful, read the body for the token
     const data = await response.json();
     localStorage.setItem("token", data.token);
     localStorage.setItem("userRole", "admin");
 
     selectRole("admin");
   } catch (error) {
-    console.error("Admin login failed:", error);
+    console.error("Network crash or parsing error:", error);
     alert("An error occurred. Please try again later.");
   }
 };
@@ -74,16 +87,26 @@ window.doctorLoginHandler = async function () {
     const response = await fetch(DOCTOR_API, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(doctor)
+      body: JSON.stringify(doctor),
     });
 
+    // 1. Check if the server returned an error (401, 500, etc.)
     if (!response.ok) {
-      alert("Invalid doctor credentials.");
+      // 2. Read the JSON payload safely *before* doing anything else
+      const errorData = await response.json().catch(() => null);
+
+      // 3. Fallback if the backend didn't send a JSON message
+      const errorMessage =
+        errorData?.message || `Server error: ${response.status}`;
+
+      console.error("Login failed context:", errorData);
+      alert(errorMessage);
       return;
     }
 
+    // If successful, read the body for the token
     const data = await response.json();
     localStorage.setItem("token", data.token);
     localStorage.setItem("userRole", "doctor");
@@ -95,8 +118,56 @@ window.doctorLoginHandler = async function () {
   }
 };
 
+// === Patient Login Handler ===
+window.patientLoginHandler = async function () {
+  const email = document.getElementById("PatientEmail")?.value;
+  const password = document.getElementById("PatientPassword")?.value;
 
+  if (!email || !password) {
+    alert("Please enter both email and password.");
+    return;
+  }
 
+  const patient = { email, password };
+
+  try {
+    const response = await fetch(PATIENT_API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(patient),
+    });
+
+    // 1. Check if the server returned an error (401, 500, etc.)
+    if (!response.ok) {
+      // 2. Read the JSON payload safely *before* doing anything else
+      const errorData = await response.json().catch(() => null);
+
+      // 3. Fallback if the backend didn't send a JSON message
+      const errorMessage =
+        errorData?.message || `Server error: ${response.status}`;
+
+      console.error("Login failed context:", errorData);
+      alert(errorMessage);
+      return;
+    }
+
+    // If successful, read the body for the token.
+    // Some API versions may return a raw token string, so fallback to text.
+    const data = await response.json().catch(async () => ({
+      token: await response.text(),
+    }));
+
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("userRole", "patient");
+
+    selectRole("patient");
+  } catch (error) {
+    console.error("Patient login failed:", error);
+    alert("An error occurred. Please try again later.");
+  }
+};
 
 /*
   Import the openModal function to handle showing login popups/modals
